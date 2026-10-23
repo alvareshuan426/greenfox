@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Спасибо за покупку — GreenFox</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="thanks">
+  <div class="hero__moss" aria-hidden="true"></div>
+  <div class="thanks__box">
+    <svg class="modal__leaf" viewBox="0 0 60 60" aria-hidden="true"><path d="M4 56C4 24 24 4 56 4c0 32-20 52-52 52z" fill="currentColor"/></svg>
+    <h1>Спасибо за покупку!</h1>
+    <p class="thanks__lead">Осталось получить доступ к методичке в закрытом Telegram-канале.</p>
+
+    <ol class="steps">
+      <li><b>Откройте Telegram</b> с аккаунта <b class="js-nick">, который указали при покупке</b></li>
+      <li><b>Нажмите кнопку ниже</b> и затем «Подать заявку на вступление»</li>
+      <li><b>Дождитесь одобрения</b> — мы сверим ник с оплаченным заказом <span class="js-time">в течение 24 часов</span></li>
+    </ol>
+
+    <a class="btn btn--full js-channel" href="#" target="_blank" rel="noopener">Подать заявку в канал</a>
+
+    <p class="thanks__warn">Доступ выдаётся только одному аккаунту — тому, что указан в заказе. Заявки с других аккаунтов отклоняются, поэтому пересылать ссылку бесполезно.</p>
+
+    <a class="thanks__back" href="index.html">← Вернуться на сайт</a>
+  </div>
+</main>
+
+<script src="config.js"></script>
+<script>
+  document.querySelector(".js-channel").href = CONFIG.channelLink;
+  document.querySelector(".js-time").textContent = CONFIG.approvalTime;
+  try {
+    const nick = localStorage.getItem("gf-nick");
+    if (nick) document.querySelector(".js-nick").textContent = nick;
+  } catch (err) {}
+</script>
+</body>
+</html>
