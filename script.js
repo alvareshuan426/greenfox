@@ -23,12 +23,15 @@ if (isEarly) {
 }
 
 /* ---------- Заставка ---------- */
-window.addEventListener("load", () => {
+// логотип успевает «нарисоваться», затем шторки расходятся
+const introMin = new Promise((r) => setTimeout(r, 1700));
+const pageLoad = new Promise((r) => window.addEventListener("load", r));
+Promise.all([introMin, pageLoad]).then(() => {
   document.body.classList.add("is-loaded");
-  setTimeout(() => document.body.classList.add("is-ready"), 900);
+  setTimeout(() => document.body.classList.add("is-ready"), 700);
 });
 // подстраховка, если какая-то картинка грузится долго
-setTimeout(() => document.body.classList.add("is-loaded", "is-ready"), 3500);
+setTimeout(() => document.body.classList.add("is-loaded", "is-ready"), 4500);
 
 /* ---------- Навигация ---------- */
 const nav = $(".nav");
@@ -59,8 +62,63 @@ const io = new IntersectionObserver(
 );
 $$(".reveal, .overgrow, .seats").forEach((el) => io.observe(el));
 // лиана в hero растёт сразу после заставки, остальные — по скроллу
-setTimeout(() => $(".vine--hero").classList.add("is-grown"), 1400);
-$$(".vine:not(.vine--hero)").forEach((el) => io.observe(el));
+$$(".vine").forEach((el) => io.observe(el));
+
+/* ---------- Живая лиса в первом экране ---------- */
+const video = $(".js-hero-video");
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (video && !calm) {
+  video.src = innerWidth < 760 ? video.dataset.srcMobile : video.dataset.src;
+  video.play().catch(() => {}); // без автозапуска остаётся постер — тот же кадр
+  // не тратим батарею, когда первый экран прокручен
+  new IntersectionObserver(([e]) => (e.isIntersecting ? video.play().catch(() => {}) : video.pause()))
+    .observe(video);
+}
+
+/* ---------- Цитата: слова проявляются из размытия по мере прокрутки ---------- */
+const quote = $(".quote");
+const words = [];
+$$(".js-blur-words").forEach((p) => {
+  const accent = ["понимания.", "хаоса"];
+  // делим только по обычным пробелам, неразрывные («в косметичке») остаются вместе
+  p.innerHTML = p.textContent.split(/ +/).map((w) => {
+    const cls = accent.some((a) => w.includes(a)) ? "word word--accent" : "word";
+    return `<span class="${cls}">${w}</span>`;
+  }).join(" ");
+  words.push(...p.querySelectorAll(".word"));
+});
+const onQuoteScroll = () => {
+  const r = quote.getBoundingClientRect();
+  // 0 — секция появилась снизу, 1 — дошла до середины экрана
+  const progress = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight * 0.75)));
+  const shown = Math.round(progress * words.length);
+  words.forEach((w, i) => w.classList.toggle("is-on", i < shown));
+  quote.style.setProperty("--parallax", (r.top / innerHeight) * -60 + "px");
+};
+if (quote) {
+  if (calm) words.forEach((w) => w.classList.add("is-on"));
+  else { onQuoteScroll(); window.addEventListener("scroll", onQuoteScroll, { passive: true }); }
+}
+
+/* ---------- Визитка: переворот по клику и наклон за курсором ---------- */
+$$(".js-bizcard").forEach((card) => {
+  card.addEventListener("click", () => {
+    const flipped = card.classList.toggle("is-flipped");
+    card.setAttribute("aria-pressed", flipped);
+  });
+  if (calm) return;
+  card.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.setProperty("--ry", x * 16 + "deg");
+    card.style.setProperty("--rx", y * -12 + "deg");
+  });
+  card.addEventListener("pointerleave", () => {
+    card.style.setProperty("--ry", "0deg");
+    card.style.setProperty("--rx", "0deg");
+  });
+});
 
 /* ---------- Форма заказа ---------- */
 const form = $("#order-form");

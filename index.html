@@ -7,13 +7,13 @@
   <meta name="description" content="Авторская методичка визажиста Ольги Свиридовой: подготовка кожи, тон, коррекция, глаза и брови, косметика и инструменты. 80+ страниц, доступ в закрытом Telegram-канале.">
   <meta property="og:title" content="Макияж, который подчёркивает тебя — методичка GreenFox">
   <meta property="og:description" content="Больше понимания. Меньше хаоса в косметичке.">
-  <meta property="og:image" content="img/work-2.jpg">
+  <meta property="og:image" content="img/fox-still.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&family=Unbounded:wght@300;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script>document.documentElement.classList.add("js")</script>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8 9 6 17 9 25c4-1 8-4 10-9 1-4 0-9-3-13z' fill='%234f6340'/%3E%3C/svg%3E">
+  <link rel="icon" href="img/favicon.png" type="image/png">
 </head>
 <body>
 
@@ -21,7 +21,10 @@
 <div class="intro" aria-hidden="true">
   <div class="intro__panel intro__panel--l"></div>
   <div class="intro__panel intro__panel--r"></div>
-  <div class="intro__logo">G R E E N F O X</div>
+  <div class="intro__logo">
+    <img class="intro__fox" src="img/logo-fox.png" alt="">
+    <span>GREEN FOX</span>
+  </div>
 </div>
 
 <!-- SVG-спрайт листьев -->
@@ -39,79 +42,51 @@
 </svg>
 
 <header class="nav" id="top">
-  <a href="#top" class="nav__logo">GREENFOX</a>
+  <a href="#top" class="nav__logo"><img src="img/logo-fox.png" alt="" width="30" height="30">GREEN FOX</a>
   <nav class="nav__links" aria-label="Разделы">
     <a href="#inside">Что внутри</a>
     <a href="#author">Автор</a>
     <a href="#for-whom">Кому подойдёт</a>
     <a href="#works">Работы</a>
     <a href="#faq">Вопросы</a>
+    <a href="#contact">Контакты</a>
   </nav>
   <a href="#buy" class="btn btn--small">Купить</a>
 </header>
 
 <main>
 
-  <!-- ===== HERO ===== -->
+  <!-- ===== HERO: живая лиса ===== -->
   <section class="hero">
-    <div class="hero__moss" aria-hidden="true"></div>
+    <video class="hero__video js-hero-video" muted loop playsinline preload="none" poster="img/fox-still.jpg"
+           data-src="img/fox.mp4" data-src-mobile="img/fox-mobile.mp4" aria-hidden="true"></video>
+    <div class="hero__shade" aria-hidden="true"></div>
     <div class="hero__inner">
-      <div class="hero__text">
-        <p class="eyebrow">Авторская методичка · 80+ страниц</p>
-        <h1 class="hero__title">
-          <span class="line"><span>Макияж,</span></span>
-          <span class="line"><span>который</span></span>
-          <span class="line"><span><em>подчёркивает</em> тебя</span></span>
-        </h1>
-        <p class="hero__lead">Как создавать красивый, гармоничный макияж, работать с текстурами и добиваться эффекта ухоженной, живой кожи.</p>
-        <ul class="hero__nos">
-          <li>Без лишних слоёв.</li>
-          <li>Без случайных покупок.</li>
-          <li>С пониманием того, что действительно работает.</li>
-        </ul>
-        <div class="hero__cta">
-          <a href="#buy" class="btn">Получить методичку</a>
-          <div class="hero__price">
-            <span class="price-now js-price">1 500 ₽</span>
-            <span class="price-old js-price-old">2 900 ₽</span>
-            <span class="price-note js-seats-note">для первых 10 покупателей</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero__visual">
-        <div class="arch">
-          <img src="img/work-1.jpg" alt="Макияж с акцентом на живую кожу и веснушки — работа Ольги Свиридовой" width="720" height="1280">
-        </div>
-        <!-- лиана, которая «прорастает» по арке -->
-        <svg class="vine vine--hero" viewBox="0 0 400 640" aria-hidden="true">
-          <path class="vine__stem" d="M380 640C350 560 390 500 340 430S250 360 280 280 360 190 300 120 190 60 170 0"/>
-          <g class="vine__leaves">
-            <use href="#leaf" x="340" y="520" width="22" height="44" transform="rotate(-35 351 542)"/>
-            <use href="#leaf-round" x="352" y="440" width="34" height="34"/>
-            <use href="#leaf" x="282" y="360" width="22" height="44" transform="rotate(40 293 382)"/>
-            <use href="#leaf-round" x="256" y="270" width="30" height="30" transform="rotate(80 271 285)"/>
-            <use href="#leaf" x="320" y="170" width="20" height="40" transform="rotate(-20 330 190)"/>
-            <use href="#leaf-round" x="250" y="90" width="28" height="28" transform="rotate(10 264 104)"/>
-            <use href="#leaf" x="176" y="20" width="18" height="36" transform="rotate(30 185 38)"/>
-          </g>
-        </svg>
-        <div class="hero__badge">
-          <span class="hero__badge-num">6</span>
-          <span>лет опыта<br>в визаже</span>
+      <p class="eyebrow eyebrow--center">Авторская методичка · 80+ страниц</p>
+      <h1 class="hero__title">
+        <span class="line"><span>Макияж,</span></span>
+        <span class="line"><span>который подчёркивает</span></span>
+        <span class="line"><span>тебя</span></span>
+      </h1>
+      <p class="hero__sub">Визажист&nbsp;—&nbsp;бровист Ольга Свиридова</p>
+      <p class="hero__lead">Как создавать красивый, гармоничный макияж, работать с текстурами и добиваться эффекта ухоженной, живой кожи. Без лишних слоёв. Без случайных покупок.</p>
+      <div class="hero__cta">
+        <a href="#buy" class="btn btn--peach">Получить методичку</a>
+        <div class="hero__price">
+          <span class="price-now js-price">1 500 ₽</span>
+          <span class="price-old js-price-old">2 900 ₽</span>
+          <span class="price-note js-seats-note">для первых 10 покупателей</span>
         </div>
       </div>
     </div>
     <a href="#quote" class="hero__scroll" aria-label="Листать дальше"><span></span></a>
   </section>
 
-  <!-- ===== ЦИТАТА ===== -->
+  <!-- ===== ЦИТАТА: слова проявляются из размытия ===== -->
   <section class="quote" id="quote">
-    <svg class="vine vine--quote" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-      <path class="vine__stem" d="M0 70C150 20 260 110 420 60S700 10 820 70 1050 100 1200 40"/>
-    </svg>
-    <blockquote class="reveal">
-      <p>«Больше понимания.<br>Меньше хаоса в&nbsp;косметичке»</p>
+    <div class="quote__bg" aria-hidden="true"></div>
+    <blockquote>
+      <p class="js-blur-words">«Больше понимания. Меньше хаоса в&nbsp;косметичке»</p>
       <cite>— Ольга Свиридова</cite>
     </blockquote>
   </section>
@@ -264,6 +239,7 @@
       </div>
       <div class="gallery">
         <figure class="gallery__item reveal"><img src="img/work-1.jpg" alt="Работа: нюдовый макияж с розовыми тенями" loading="lazy"><figcaption>Нюдовый макияж · сияющий тон</figcaption></figure>
+        <figure class="gallery__item gallery__item--accent reveal"><img src="img/work-4.jpg" alt="Работа: сияющая кожа и голливудская волна" loading="lazy"><figcaption>Вечерний образ · сияющая кожа</figcaption></figure>
         <figure class="gallery__item reveal"><img src="img/work-3.jpg" alt="Работа: голливудский макияж с красными губами" loading="lazy"><figcaption>Голливудский макияж · красные губы</figcaption></figure>
       </div>
     </div>
@@ -359,7 +335,7 @@
   </section>
 
   <!-- ===== FAQ ===== -->
-  <section class="faq overgrow" id="faq">
+  <section class="faq overgrow overgrow--dark" id="faq">
     <div class="container container--narrow">
       <div class="section-head reveal">
         <p class="eyebrow">Вопросы</p>
@@ -392,11 +368,36 @@
     </div>
   </section>
 
+  <!-- ===== КОНТАКТЫ: фото Ольги и визитка ===== -->
+  <section class="contact overgrow" id="contact">
+    <div class="container contact__grid">
+      <figure class="contact__photo reveal">
+        <img src="img/olga-2.jpg" alt="Ольга Свиридова — визажист-бровист" loading="lazy">
+      </figure>
+      <div class="contact__text reveal">
+        <p class="eyebrow">Ваш личный визажист — бровист</p>
+        <h2 class="contact__title">Ты&nbsp;— искусство!</h2>
+        <p class="contact__lead">Методичка — это то, чему я учу. А ещё я работаю лично: макияж и оформление бровей. Переверните визитку — на обороте QR-код.</p>
+        <button type="button" class="bizcard js-bizcard" aria-label="Перевернуть визитку GreenFox" aria-pressed="false">
+          <span class="bizcard__inner">
+            <img class="bizcard__face" src="img/card-front.jpg" alt="Визитка GreenFox: ваш личный визажист-бровист" loading="lazy">
+            <img class="bizcard__face bizcard__face--back" src="img/card-back.jpg" alt="Оборот визитки: QR-код и надпись «Ты — искусство!»" loading="lazy">
+          </span>
+        </button>
+        <p class="bizcard__hint">Нажмите на визитку</p>
+        <div class="contact__links">
+          <a class="btn" href="https://instagram.com/greenfox.msk" target="_blank" rel="noopener">Написать @greenfox.msk</a>
+          <a class="contact__file" href="img/card-greenfox.pdf" download>Скачать визитку (PDF)</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="footer">
   <div class="container footer__inner">
-    <div class="footer__logo">G R E E N F O X</div>
+    <div class="footer__logo"><img src="img/logo-fox.png" alt="" width="56" height="56" loading="lazy">GREEN FOX</div>
     <p>Авторская методичка Ольги Свиридовой</p>
     <nav class="footer__links">
       <a href="https://instagram.com/greenfox.msk" target="_blank" rel="noopener">@greenfox.msk</a>
