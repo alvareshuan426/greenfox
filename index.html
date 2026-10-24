@@ -57,10 +57,14 @@
 <main>
 
   <!-- ===== HERO: живая лиса ===== -->
-  <section class="hero">
+  <section class="hero js-hero">
+   <div class="hero__stage">
     <video class="hero__video js-hero-video" muted loop playsinline preload="none" poster="img/fox-still.jpg"
            data-src="img/fox.mp4" data-src-mobile="img/fox-mobile.mp4" aria-hidden="true"></video>
+    <!-- при прокрутке лиса просыпается и убегает: кадры рисуются на canvas -->
+    <canvas class="hero__run js-hero-run" data-frames="81" aria-hidden="true"></canvas>
     <div class="hero__shade" aria-hidden="true"></div>
+    <canvas class="hero__fireflies js-fireflies" aria-hidden="true"></canvas>
     <div class="hero__inner">
       <p class="eyebrow eyebrow--center">Авторская методичка · 80+ страниц</p>
       <h1 class="hero__title">
@@ -80,6 +84,7 @@
       </div>
     </div>
     <a href="#quote" class="hero__scroll" aria-label="Листать дальше"><span></span></a>
+   </div>
   </section>
 
   <!-- ===== ЦИТАТА: слова проявляются из размытия ===== -->

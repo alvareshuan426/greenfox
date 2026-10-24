@@ -35,7 +35,13 @@ setTimeout(() => document.body.classList.add("is-loaded", "is-ready"), 4500);
 
 /* ---------- Навигация ---------- */
 const nav = $(".nav");
-const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 40);
+// над тёмной сценой с лисой шапка остаётся прозрачной, светлеет — после неё
+const heroEl = $(".js-hero");
+const onScroll = () => {
+  const heroEnd = heroEl ? heroEl.offsetTop + heroEl.offsetHeight - 80 : 40;
+  nav.classList.toggle("is-scrolled", window.scrollY > heroEnd);
+  nav.classList.toggle("is-over-hero", window.scrollY > 40 && window.scrollY <= heroEnd);
+};
 onScroll();
 window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -71,8 +77,144 @@ if (video && !calm) {
   video.src = innerWidth < 760 ? video.dataset.srcMobile : video.dataset.src;
   video.play().catch(() => {}); // без автозапуска остаётся постер — тот же кадр
   // не тратим батарею, когда первый экран прокручен
-  new IntersectionObserver(([e]) => (e.isIntersecting ? video.play().catch(() => {}) : video.pause()))
-    .observe(video);
+  new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) video.pause();
+    else if (!hero.classList.contains("is-running")) video.play().catch(() => {});
+  }).observe(video);
+}
+
+/* ---------- Лиса убегает при прокрутке ---------- */
+// Кадры видео «лиса просыпается и убегает» лежат в img/run (и лёгкие — в img/run-m).
+// Номер кадра зависит от того, насколько прокручен первый экран.
+const hero = $(".js-hero");
+const runCanvas = $(".js-hero-run");
+const RUN = { count: Number(runCanvas?.dataset.frames || 0), frames: [], drawn: -1 };
+const heroStatic = !hero || calm || !RUN.count;
+if (heroStatic && hero) hero.classList.add("hero--static");
+
+if (!heroStatic) {
+  const dir = innerWidth < 760 ? "img/run-m/" : "img/run/";
+  const ctx = runCanvas.getContext("2d");
+  const pad = (n) => String(n).padStart(3, "0");
+  // кадры грузятся после всего остального, чтобы не тормозить первый экран
+  window.addEventListener("load", () => {
+    for (let i = 0; i < RUN.count; i++) {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = `${dir}f${pad(i + 1)}.jpg`;
+      RUN.frames[i] = img;
+    }
+  });
+
+  const fitCanvas = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    runCanvas.width = runCanvas.clientWidth * dpr;
+    runCanvas.height = runCanvas.clientHeight * dpr;
+    RUN.drawn = -1;
+  };
+  // как object-fit: cover, с тем же смещением кадра, что у видео
+  const drawCover = (img) => {
+    const cw = runCanvas.width, ch = runCanvas.height;
+    const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    const w = img.naturalWidth * scale, h = img.naturalHeight * scale;
+    const posX = innerWidth < 760 ? 0.4 : 0.5, posY = innerWidth < 760 ? 1 : 0.75;
+    ctx.drawImage(img, (cw - w) * posX, (ch - h) * posY, w, h);
+  };
+  // берём ближайший уже загруженный кадр, если нужный ещё в пути
+  const frameAt = (i) => {
+    for (let d = 0; d < RUN.count; d++) {
+      const a = RUN.frames[i - d], b = RUN.frames[i + d];
+      if (a && a.complete && a.naturalWidth) return a;
+      if (b && b.complete && b.naturalWidth) return b;
+    }
+    return null;
+  };
+
+  let ticking = false;
+  const onHeroScroll = () => {
+    ticking = false;
+    const total = hero.offsetHeight - innerHeight;
+    const p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / total));
+    // бег занимает почти всю прокрутку сцены, в конце — пустая поляна
+    const run = Math.min(1, p / 0.85);
+    const running = p > 0.01 && frameAt(0);
+    hero.classList.toggle("is-running", !!running);
+    if (running) {
+      video.pause();
+      const i = Math.round(run * (RUN.count - 1));
+      const img = frameAt(i);
+      if (img && i !== RUN.drawn) { drawCover(img); RUN.drawn = i; }
+    } else if (video && video.paused && video.src) video.play().catch(() => {});
+    // текст уходит вверх и растворяется во второй половине
+    const t = Math.min(1, Math.max(0, (p - 0.28) / 0.3));
+    hero.style.setProperty("--text-o", 1 - t);
+    hero.style.setProperty("--text-y", t * -60 + "px");
+  };
+  const requestHero = () => { if (!ticking) { ticking = true; requestAnimationFrame(onHeroScroll); } };
+  fitCanvas();
+  window.addEventListener("resize", () => { fitCanvas(); requestHero(); });
+  window.addEventListener("scroll", requestHero, { passive: true });
+  window.addEventListener("load", requestHero);
+}
+
+/* ---------- Светлячки над поляной ---------- */
+// Золотые искры, как в видео после того, как лиса убежала. При прокрутке их становится больше.
+const ffCanvas = $(".js-fireflies");
+if (ffCanvas && !calm) {
+  const fctx = ffCanvas.getContext("2d");
+  const small = innerWidth < 760;
+  const MAX = small ? 34 : 70;
+  let W = 0, H = 0, dpr = 1, visible = true, boost = 0;
+  const flies = [];
+  const spawn = (fly = {}) => Object.assign(fly, {
+    x: Math.random() * W,
+    // рождаются у земли, в нижней половине кадра, и медленно поднимаются
+    y: H * (0.55 + Math.random() * 0.45),
+    r: (1 + Math.random() * 1.8) * dpr,
+    vy: -(0.08 + Math.random() * 0.25) * dpr,
+    phase: Math.random() * Math.PI * 2,
+    wobble: 0.3 + Math.random() * 0.7,
+    life: 0, ttl: 400 + Math.random() * 700,
+  });
+  const resize = () => {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = ffCanvas.width = ffCanvas.clientWidth * dpr;
+    H = ffCanvas.height = ffCanvas.clientHeight * dpr;
+  };
+  resize();
+  for (let i = 0; i < MAX; i++) { const f = spawn(); f.life = Math.random() * f.ttl; flies.push(f); }
+  window.addEventListener("resize", resize);
+  new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(ffCanvas);
+
+  const tick = (t) => {
+    requestAnimationFrame(tick);
+    if (!visible) return;
+    // сколько светлячков видно: часть в покое, все — когда лиса убегает
+    const p = hero ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / (hero.offsetHeight - innerHeight || 1))) : 0;
+    boost += ((0.45 + p * 0.55) - boost) * 0.05;
+    const active = Math.round(MAX * boost);
+    fctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < flies.length; i++) {
+      const f = flies[i];
+      f.life++;
+      if (f.life > f.ttl || f.y < H * 0.15) spawn(f);
+      if (i >= active) continue;
+      f.y += f.vy * (1 + p * 2);
+      f.x += Math.sin(t / 900 + f.phase) * f.wobble * dpr * 0.4;
+      // плавно зажигаются и гаснут, плюс мерцание
+      const fade = Math.min(1, f.life / 60, (f.ttl - f.life) / 60);
+      const a = Math.max(0, fade * (0.55 + 0.45 * Math.sin(t / 260 + f.phase * 3)));
+      const g = fctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 6);
+      g.addColorStop(0, `rgba(255, 226, 140, ${a})`);
+      g.addColorStop(0.25, `rgba(243, 190, 90, ${a * 0.55})`);
+      g.addColorStop(1, "rgba(243, 190, 90, 0)");
+      fctx.fillStyle = g;
+      fctx.beginPath();
+      fctx.arc(f.x, f.y, f.r * 6, 0, Math.PI * 2);
+      fctx.fill();
+    }
+  };
+  requestAnimationFrame(tick);
 }
 
 /* ---------- Цитата: слова проявляются из размытия по мере прокрутки ---------- */
