@@ -116,7 +116,7 @@ if (!heroStatic) {
     const cw = runCanvas.width, ch = runCanvas.height;
     const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
     const w = img.naturalWidth * scale, h = img.naturalHeight * scale;
-    const posX = innerWidth < 760 ? 0.4 : 0.5, posY = innerWidth < 760 ? 1 : 0.75;
+    const posX = innerWidth < 760 ? 0.45 : 0.5, posY = innerWidth < 760 ? 1 : 0.75;
     ctx.drawImage(img, (cw - w) * posX, (ch - h) * posY, w, h);
   };
   // берём ближайший уже загруженный кадр, если нужный ещё в пути
