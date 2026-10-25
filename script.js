@@ -57,8 +57,7 @@ const io = new IntersectionObserver(
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
       const el = e.target;
-      if (el.classList.contains("overgrow")) el.classList.add("is-open");
-      else if (el.classList.contains("vine")) el.classList.add("is-grown");
+      if (el.classList.contains("vine")) el.classList.add("is-grown");
       else if (el.classList.contains("seats")) $(".js-seats-bar").style.width =
         (CONFIG.seatsSold / CONFIG.seatsTotal) * 100 + "%";
       else el.classList.add("is-visible");
@@ -66,7 +65,7 @@ const io = new IntersectionObserver(
     }),
   { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
 );
-$$(".reveal, .overgrow, .seats").forEach((el) => io.observe(el));
+$$(".reveal, .seats").forEach((el) => io.observe(el));
 // лиана в hero растёт сразу после заставки, остальные — по скроллу
 $$(".vine").forEach((el) => io.observe(el));
 
@@ -191,7 +190,7 @@ if (ffCanvas && !calm) {
     if (!visible) return;
     // сколько светлячков видно: часть в покое, все — когда лиса убегает
     const p = hero ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / (hero.offsetHeight - innerHeight || 1))) : 0;
-    boost += ((0.45 + p * 0.55) - boost) * 0.05;
+    boost += ((0.18 + p * 0.82) - boost) * 0.05;
     const active = Math.round(MAX * boost);
     fctx.clearRect(0, 0, W, H);
     for (let i = 0; i < flies.length; i++) {
@@ -204,13 +203,13 @@ if (ffCanvas && !calm) {
       // плавно зажигаются и гаснут, плюс мерцание
       const fade = Math.min(1, f.life / 60, (f.ttl - f.life) / 60);
       const a = Math.max(0, fade * (0.55 + 0.45 * Math.sin(t / 260 + f.phase * 3)));
-      const g = fctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 6);
+      const g = fctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 5);
       g.addColorStop(0, `rgba(255, 226, 140, ${a})`);
       g.addColorStop(0.25, `rgba(243, 190, 90, ${a * 0.55})`);
       g.addColorStop(1, "rgba(243, 190, 90, 0)");
       fctx.fillStyle = g;
       fctx.beginPath();
-      fctx.arc(f.x, f.y, f.r * 6, 0, Math.PI * 2);
+      fctx.arc(f.x, f.y, f.r * 5, 0, Math.PI * 2);
       fctx.fill();
     }
   };
@@ -221,7 +220,7 @@ if (ffCanvas && !calm) {
 const quote = $(".quote");
 const words = [];
 $$(".js-blur-words").forEach((p) => {
-  const accent = ["понимания.", "хаоса"];
+  const accent = ["понимания", "хаоса"];
   // делим только по обычным пробелам, неразрывные («в косметичке») остаются вместе
   p.innerHTML = p.textContent.split(/ +/).map((w) => {
     const cls = accent.some((a) => w.includes(a)) ? "word word--accent" : "word";
